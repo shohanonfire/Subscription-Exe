@@ -1,1 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUBSCRIPTION EXE</title>
+    <style>
+        /* Body Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF5F6D, #FFC371);
+            color: #fff;
+            text-align: center;
+            padding: 50px;
+        }
 
+        /* Logo Styling */
+        .logo {
+            display: block;
+            margin: 0 auto 20px auto;
+            width: 100px; /* Adjust size as needed */
+            height: 100px; /* Adjust size as needed */
+            border-radius: 50%; /* Makes the logo round */
+            border: 3px solid white; /* Optional border */
+        }
+
+        /* Header Title Styling */
+        h2 {
+            color: #fff;
+            font-size: 1.5em; /* Smaller font size */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbowText 7s linear infinite;
+        }
+
+        @keyframes rainbowText {
+            0% { background-position: 0% }
+            100% { background-position: 100% }
+        }
+
+        /* Input and Container Styling */
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+            display: inline-block;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            padding: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: background-color 0.3s;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            color: #333;
+            background-color: #f9f9f9;
+            letter-spacing: 0.2em; /* Spacing for password-like input */
+            font-family: 'Courier New', Courier, monospace; /* Monospace font for password style */
+            -webkit-text-security: disc; /* Hide text like a password */
+        }
+
+        /* Confirm Button Styling */
+        input[type="submit"] {
+            background-color: black;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            animation: flicker 1s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { background-color: black; color: white; }
+            50% { background-color: white; color: black; }
+        }
+
+        input[type="submit"]:hover {
+            /* No hover effect; flicker will show action */
+        }
+
+        /* Channel Info Styling */
+        .info {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            display: none;
+            color: #333;
+        }
+
+        .info img {
+            width: 70px; /* Bigger size for YouTube logo */
+            height: 70px; /* Bigger size for YouTube logo */
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+
+        /* Bold Channel Name and RGB Quantity */
+        #channelName {
+            font-weight: bold; /* Bold font for "Channel Name" */
+            font-size: 1.5em; /* Adjust size as needed */
+        }
+
+        #channel {
+            font-weight: bold;
+            font-size: 1.2em;
+            background: linear-gradient(90deg, red, green, blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rgbAnimation 3s infinite;
+        }
+
+        /* Countdown styling */
+        #countdown {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #FFEB3B;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+
+        /* Countdown Ball Styling */
+        .countdown-ball {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: black;
+            color: white;
+            font-weight: bold;
+            line-height: 30px; /* Center the text vertically */
+            margin: 0 5px; /* Space between ball and text */
+            animation: ballFlicker 1s infinite;
+        }
+
+        @keyframes ballFlicker {
+            0%, 100% { background-color: black; color: white; }
+            50% { background-color: white; color: black; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            input[type="text"] {
+                width: 90%;
+            }
+
+            h2 {
+                font-size: 1.2em; /* Smaller font size for mobile */
+            }
+
+            input[type="submit"] {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Logo at the Top -->
+<img src="https://imgur.com/bODPbe8.png" alt="Logo" class="logo">
+ 
+<!-- Header Title -->
+<h2>SUBSCRIPTION EXE<br>REPLIT PROJECT</h2>
+
+<!-- Input and Confirmation -->
+<div class="input-container">
+    <input type="text" id="username" placeholder="Enter SUBSCRIPTION ID"><br>
+</div>
+<input type="submit" value="CONFIRM" onclick="checkUsername()">
+
+<!-- Channel Information -->
+<div class="info" id="info">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube Logo">
+    <h2 style="font-size: 1.2em; color: #FFEB3B;">Channel Information</h2>
+    <p id="channelName">Channel Name: <span id="channel"></span></p>
+    <p id="quantity">Quantity: <span id="qty" style="font-weight: bold; background: linear-gradient(90deg, red, green, blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rgbAnimation 3s infinite;"></span></p>
+</div> 
+
+<!-- Countdown -->
+<div id="countdown"></div>
+
+<script>
+    // Simulated database of usernames, channel names, and quantities
+    const database = [
+        { username: "user1", channelName: "Channel One", quantity: 100 },
+        { username: "user2", channelName: "Channel Two", quantity: 200 },
+        { username: "user3", channelName: "Channel Three", quantity: 150 },
+        { username: "user4", channelName: "Channel Four", quantity: 300 },
+        { username: "user5", channelName: "Channel Five", quantity: 250 },
+        { username: "user6", channelName: "Channel Six", quantity: 180 },
+        { username: "user7", channelName: "Channel Seven", quantity: 220 },
+        { username: "user8", channelName: "Channel Eight", quantity: 90 },
+        { username: "user9", channelName: "Channel Nine", quantity: 130 },
+        { username: "user10", channelName: "Channel Ten", quantity: 170 }
+    ];
+
+    function checkUsername() {
+        const usernameInput = document.getElementById('username').value;
+        const userInfo = database.find(user => user.username === usernameInput);
+
+        if (userInfo) {
+            document.getElementById('channel').innerText = userInfo.channelName;
+            document.getElementById('qty').innerText = userInfo.quantity;
+            document.getElementById('info').style.display = 'block';
+
+            // Hide input and confirm button
+            document.querySelector('.input-container').style.display = 'none';
+            document.querySelector('input[type="submit"]').style.display = 'none';
+
+            startCountdown(5); // Start countdown for 5 seconds
+        } else {
+            alert('Username not matched. Please try again.');
+            document.getElementById('info').style.display = 'none';
+            document.getElementById('countdown').style.display = 'none';
+        }
+    }
+
+    function startCountdown(seconds) {
+        let countdownElement = document.getElementById('countdown');
+        countdownElement.style.display = 'block';
+        countdownElement.innerHTML = `Redirecting in <span class="countdown-ball">${seconds}</span> seconds...`;
+
+        const countdownInterval = setInterval(() => {
+          seconds--;
+            countdownElement.innerHTML = `Redirecting in <span class="countdown-ball">${seconds}</span> seconds...`;
+
+            if (seconds <= 0) {
+                clearInterval(countdownInterval);
+                window.location.href = "index4.html"; // Adjust the redirect URL as needed
+            }
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>
