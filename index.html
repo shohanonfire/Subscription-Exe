@@ -110,6 +110,7 @@
         #channelName {
             font-weight: bold; /* Bold font for "Channel Name" */
             font-size: 1.5em; /* Adjust size as needed */
+            color: white; /* Set text color to white */
         }
 
         #channel {
@@ -119,6 +120,12 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: rgbAnimation 3s infinite;
+        }
+
+        /* Quantity Styling */
+        #quantity {
+            font-weight: bold;
+            color: white; /* Set text color to white */
         }
 
         /* Countdown styling */
@@ -182,6 +189,7 @@
 <!-- Channel Information -->
 <div class="info" id="info">
     <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube Logo">
+    <img id="channelLogo" src="" alt="Channel Logo" class="channel-logo" style="display:none; border-radius: 50%;">
     <h2 style="font-size: 1.2em; color: #FFEB3B;">Channel Information</h2>
     <p id="channelName">Channel Name: <span id="channel"></span></p>
     <p id="quantity">Quantity: <span id="qty" style="font-weight: bold; background: linear-gradient(90deg, red, green, blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rgbAnimation 3s infinite;"></span></p>
@@ -191,57 +199,58 @@
 <div id="countdown"></div>
 
 <script>
-    // Simulated database of usernames, channel names, and quantities
+    // Simulated database of usernames, channel names, quantities, and logos
     const database = [
-        { username: "user1", channelName: "Channel One", quantity: 100 },
-        { username: "user2", channelName: "Channel Two", quantity: 200 },
-        { username: "user3", channelName: "Channel Three", quantity: 150 },
-        { username: "user4", channelName: "Channel Four", quantity: 300 },
-        { username: "user5", channelName: "Channel Five", quantity: 250 },
-        { username: "user6", channelName: "Channel Six", quantity: 180 },
-        { username: "user7", channelName: "Channel Seven", quantity: 220 },
-        { username: "user8", channelName: "Channel Eight", quantity: 90 },
-        { username: "user9", channelName: "Channel Nine", quantity: 130 },
-        { username: "user10", channelName: "Channel Ten", quantity: 170 }
+        { username: "user1", channelName: "Channel One", quantity: 100, logo: "https://via.placeholder.com/50" },
+        { username: "user2", channelName: "Channel Two", quantity: 200, logo: "https://via.placeholder.com/50" },
+        { username: "user3", channelName: "Channel Three", quantity: 150, logo: "https://via.placeholder.com/50" },
+        { username: "user4", channelName: "Channel Four", quantity: 300, logo: "https://via.placeholder.com/50" },
+        { username: "user5", channelName: "Channel Five", quantity: 250, logo: "https://via.placeholder.com/50" },
+        { username: "user6", channelName: "Channel Six", quantity: 180, logo: "https://via.placeholder.com/50" },
+        { username: "user7", channelName: "Channel Seven", quantity: 220, logo: "https://via.placeholder.com/50" },
+        { username: "user8", channelName: "Channel Eight", quantity: 90, logo: "https://via.placeholder.com/50" },
+        { username: "user9", channelName: "Channel Nine", quantity: 130, logo: "https://via.placeholder.com/50" },
+        { username: "user10", channelName: "Channel Ten", quantity: 75, logo: "https://via.placeholder.com/50" }
     ];
 
     function checkUsername() {
-        const usernameInput = document.getElementById('username').value;
-        const userInfo = database.find(user => user.username === usernameInput);
+        const username = document.getElementById("username").value;
+        const user = database.find(user => user.username === username);
 
-        if (userInfo) {
-            document.getElementById('channel').innerText = userInfo.channelName;
-            document.getElementById('qty').innerText = userInfo.quantity;
-            document.getElementById('info').style.display = 'block';
+        if (user) {
+            document.getElementById("channel").innerText = user.channelName;
+            document.getElementById("qty").innerText = user.quantity;
+            document.getElementById("channelLogo").src = user.logo; // Set channel logo
+            document.getElementById("channelLogo").style.display = 'block'; // Display channel logo
 
-            // Hide input and confirm button
-            document.querySelector('.input-container').style.display = 'none';
-            document.querySelector('input[type="submit"]').style.display = 'none';
+            // Show channel information and countdown
+            document.getElementById("info").style.display = 'block';
+            startCountdown(10); // Start countdown with 10 seconds
 
-            startCountdown(5); // Start countdown for 5 seconds
+            // Hide input section
+            document.getElementById("username").style.display = 'none';
+            document.querySelector("input[type='submit']").style.display = 'none';
         } else {
-            alert('Username not matched. Please try again.');
-            document.getElementById('info').style.display = 'none';
-            document.getElementById('countdown').style.display = 'none';
+            alert("Username not found!");
         }
     }
 
     function startCountdown(seconds) {
-        let countdownElement = document.getElementById('countdown');
+        const countdownElement = document.getElementById("countdown");
         countdownElement.style.display = 'block';
-        countdownElement.innerHTML = `Redirecting in <span class="countdown-ball">${seconds}</span> seconds...`;
+
+        let remainingTime = seconds;
 
         const countdownInterval = setInterval(() => {
-          seconds--;
-            countdownElement.innerHTML = `Redirecting in <span class="countdown-ball">${seconds}</span> seconds...`;
+            countdownElement.innerHTML = `Time remaining: <span class="countdown-ball">${remainingTime}</span> seconds`;
+            remainingTime--;
 
-            if (seconds <= 0) {
+            if (remainingTime < 0) {
                 clearInterval(countdownInterval);
-                window.location.href = "https://pay-bkash.vercel.app"; // Adjust the redirect URL as needed
+                countdownElement.innerHTML = "Time's up!";
             }
         }, 1000);
     }
 </script>
-
 </body>
 </html>
