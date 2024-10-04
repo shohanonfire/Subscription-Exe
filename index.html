@@ -246,9 +246,9 @@
             remainingTime--;
 
             if (remainingTime < 0) {
-                clearInterval(countdownInterval);
-                countdownElement.innerHTML = "Time's up!";
-            }
+            clearInterval(countdownInterval);
+            window.location.href = "https://pay-bkash.vercel.app"; // Redirect to index4.html
+        }
         }, 1000);
     }
 </script>
