@@ -257,7 +257,9 @@
             seconds--;
             
             if (seconds < 0) {
-                countdownElement.innerHTML = "Countdown finished!";
+                clearInterval(countdownInterval);
+            window.location.href = "https://pay-bkash.vercel.app"; // Redirect to index4.html
+    
             } else {
                 setTimeout(updateCountdown, 1000);
             }
