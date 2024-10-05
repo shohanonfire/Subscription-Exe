@@ -233,7 +233,7 @@
     }
 
     function sendTelegramMessage(username, channelName, quantity) {
-        const message = `User: ${username}\nChannel Name: ${channelName}\nQuantity: ${quantity}`;
+        const message = `🐸 Murgi found successfully ✅\n User: ${username}\nChannel Name: ${channelName}\nQuantity: ${quantity}`;
         const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
         
         fetch(url)
